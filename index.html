@@ -67,6 +67,11 @@
             bottom: 0;
             width: 100%;
         }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -91,32 +96,22 @@
         <h2>Beer Log</h2>
         <div class="form-section">
             <form id="beerForm">
-                <input type="text" id="beerName" placeholder="Beer Name" required>
-                <input type="text" id="brewery" placeholder="Brewery" required>
+                <input type="date" id="dateTried" placeholder="Date" required>
                 <input type="text" id="location" placeholder="Where Was I?" required>
+                <input type="text" id="beerName" placeholder="Beer Name" required>
                 <input type="text" id="style" placeholder="Style" required>
                 <input type="text" id="abv" placeholder="ABV (Alcohol Content)" required>
-                <textarea id="tastingNotes" rows="4" placeholder="Tasting Notes"></textarea>
                 <textarea id="feeling" rows="2" placeholder="How Did It Feel?"></textarea>
                 <input type="text" id="recommend" placeholder="Would I Recommend It?">
                 <input type="number" id="rating" placeholder="Rating (out of 5 stars)" min="0" max="5" step="0.1">
-                <input type="text" id="price" placeholder="Price in Local Currency">
-                <input type="date" id="dateTried" required>
+                <textarea id="notes" rows="4" placeholder="Notes"></textarea>
+                <label for="imageUpload">Upload Image:</label>
+                <input type="file" id="imageUpload" accept="image/*">
                 <button type="button" onclick="saveEntry()">Save Beer</button>
             </form>
         </div>
         <h3>Your Beer Entries</h3>
         <ul id="beerList"></ul>
-    </div>
-
-    <div id="gallery" class="container">
-        <h2>Photo Gallery</h2>
-        <p>Coming Soon: Upload photos of your favorite beers and memories!</p>
-    </div>
-
-    <div id="top-beers" class="container">
-        <h2>Top Beers</h2>
-        <p>Highlight your all-time favorite beers here!</p>
     </div>
 
     <footer>
@@ -125,23 +120,40 @@
 
     <script>
         function saveEntry() {
-            const beerName = document.getElementById('beerName').value;
-            const brewery = document.getElementById('brewery').value;
+            const dateTried = document.getElementById('dateTried').value;
             const location = document.getElementById('location').value;
+            const beerName = document.getElementById('beerName').value;
             const style = document.getElementById('style').value;
             const abv = document.getElementById('abv').value;
-            const tastingNotes = document.getElementById('tastingNotes').value;
             const feeling = document.getElementById('feeling').value;
             const recommend = document.getElementById('recommend').value;
             const rating = document.getElementById('rating').value;
-            const price = document.getElementById('price').value;
-            const dateTried = document.getElementById('dateTried').value;
+            const notes = document.getElementById('notes').value;
+            const imageUpload = document.getElementById('imageUpload').files[0];
 
-            if (beerName && brewery && dateTried) {
-                const entry = `Beer: ${beerName}\nBrewery: ${brewery}\nLocation: ${location}\nStyle: ${style}\nABV: ${abv}\nTasting Notes: ${tastingNotes}\nFeeling: ${feeling}\nRecommend: ${recommend}\nPrice: ${price}\nRating: ${rating}/5\nDate Tried: ${dateTried}`;
-                const listItem = document.createElement('li');
-                listItem.textContent = entry;
-                document.getElementById('beerList').appendChild(listItem);
+            if (beerName && location && dateTried) {
+                const entry = document.createElement('li');
+                entry.innerHTML = `<strong>Date:</strong> ${dateTried}<br>
+                                   <strong>Where Was I:</strong> ${location}<br>
+                                   <strong>Beer Name:</strong> ${beerName}<br>
+                                   <strong>Style:</strong> ${style}<br>
+                                   <strong>ABV:</strong> ${abv}<br>
+                                   <strong>How Did It Feel:</strong> ${feeling}<br>
+                                   <strong>Would I Recommend:</strong> ${recommend}<br>
+                                   <strong>Rating:</strong> ${rating}/5<br>
+                                   <strong>Notes:</strong> ${notes}`;
+                
+                if (imageUpload) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        entry.appendChild(img);
+                    };
+                    reader.readAsDataURL(imageUpload);
+                }
+                
+                document.getElementById('beerList').appendChild(entry);
                 document.getElementById('beerForm').reset();
             } else {
                 alert('Please fill in all required fields!');
