@@ -1,0 +1,15 @@
+# Initialize Git in the folder
+git init
+
+# Add the remote repository
+git remote add origin https://github.com/jaideep.joshi/TravelBeerJournal.git
+
+# Stage the files
+git add .
+
+# Commit the files
+git commit -m "Initial commit for Travel Beer Journal"
+
+# Push to GitHub
+git branch -M main
+git push -u origin main
